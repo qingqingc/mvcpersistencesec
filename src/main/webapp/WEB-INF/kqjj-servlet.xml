@@ -1,0 +1,106 @@
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+xmlns:beans="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans.xsd
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context.xsd
+http://www.springframework.org/schema/security
+http://www.springframework.org/schema/security/spring-security.xsd">
+
+<!-- <beans:beans xmlns="http://www.springframework.org/schema/security"
+xmlns:beans="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context-3.0.xsd
+http://www.springframework.org/schema/security
+http://www.springframework.org/schema/security/spring-security.xsd"> -->
+	<!-- Spring security -->
+    <!-- <http>
+        <intercept-url pattern="/**" access="hasRole('USER')" />
+        <form-login />
+        <logout />
+    </http> -->
+    <!-- Don't intercept static files  -->
+    <http pattern="/**/*.jpg" security="none" />
+	<http pattern="/**/*.png" security="none" />
+	<http pattern="/**/*.gif" security="none" />
+	<http pattern="/**/*.css" security="none" />
+	<http pattern="/**/*.js" security="none" />
+	<http pattern="/**/*.ico" security="none" />
+	<!-- <http pattern="/**/*.JPEG" security="none" /> -->
+	
+	<!-- login page -->
+	<http pattern="/logink"    security="none" />
+	<!-- restful web service -->
+	<http pattern="/ws/**"    security="none" />
+	<!-- validate photo code -->
+	<http pattern="/validateImage"  security="none" />
+	<http pattern="/internet/**"  security="none" />
+	
+	<!-- <http pattern="/role/**"  security="none" /> -->
+	<http pattern="."  security="none" />
+	<http pattern="/"  security="none" />
+    <!--  -->
+     <http auto-config="true" access-decision-manager-ref="accessDecisionManager">
+        <!-- <intercept-url pattern="/login" access="isAnonymous()"/>
+        <intercept-url pattern="/css/**" access="isAnonymous()"/>
+        <intercept-url pattern="/js/**" access="isAnonymous()"/>
+        <intercept-url pattern="/images/**" access="isAnonymous()"/> -->
+        <!-- <intercept-url pattern="/**" access="hasRole('USER')"/> -->
+        <!-- <intercept-url pattern="/**" access="hasRole('ROLE_RIGHT_sk')"/> -->
+        <!-- <intercept-url pattern="/**" access="permitAll"/> -->
+        <!-- <intercept-url pattern="/**" access="@fsi.getAccessDecisionManager() eq @accessDecisionManager" /> -->
+        <!-- <intercept-url pattern="/login" filters="none" /> -->
+        
+<!--         <intercept-url pattern="/login" access="isAnonymous()" /> -->
+        <!-- <intercept-url pattern="/**" access="hasRole('ROLE_NO')"/> -->        
+        <form-login login-page="/logink" default-target-url="/mk" always-use-default-target='false'
+             authentication-failure-url="/logink?error"/>
+        
+       <!--  <logout logout-success-url="/login?logout" /> -->
+       <!-- The logout default url is "/login?logout", so needn't to explicit to write here  -->
+       <logout />
+       
+        <!-- enable csrf protection -->   
+        <csrf disabled="true"/>
+        <access-denied-handler  error-page="/accessdeny"/>
+        <custom-filter ref="fsi" after="FILTER_SECURITY_INTERCEPTOR " />
+        <!-- <csrf />         -->
+    </http>
+    
+    <authentication-manager alias="authenticationManager">
+   <!--  <authentication-provider>
+        <user-service>
+        <user name="j" password="j" authorities="ROLE_USER, ROLE_ADMIN" />
+        <user name="bob" password="bobspassword" authorities="ROLE_USER" />
+        </user-service>
+    </authentication-provider> -->
+    
+	    <authentication-provider user-service-ref="myAuthProvider">	    
+	       <password-encoder ref="myEncoder"></password-encoder>
+	    </authentication-provider>
+	    
+    </authentication-manager>
+    <beans:bean id="myAuthProvider" class="com.mysecurity.MyAuthProvider"></beans:bean>
+    <beans:bean id="myEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"></beans:bean>    
+    <beans:bean id="fsi" class="org.springframework.security.web.access.intercept.FilterSecurityInterceptor">
+        <beans:property name="authenticationManager" ref="authenticationManager"/>
+        <beans:property name="accessDecisionManager" ref="accessDecisionManager"/>
+        <beans:property name="securityMetadataSource" ref="mateDateManager"/>
+        <beans:property name="observeOncePerRequest" value="false" />
+    </beans:bean>
+    <beans:bean id="mateDateManager" class="com.mysecurity.MyInvocationSecurityMetadataSourceService"></beans:bean>
+    <beans:bean id="accessDecisionManager" class="org.springframework.security.access.vote.AffirmativeBased">
+        <beans:constructor-arg>
+            <beans:list>
+                <beans:bean class="org.springframework.security.access.vote.RoleVoter"/>
+            </beans:list>
+        </beans:constructor-arg>
+        <beans:property name="allowIfAllAbstainDecisions" value="false"/>
+    </beans:bean>
+</beans:beans>

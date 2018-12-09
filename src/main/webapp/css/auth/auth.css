@@ -1,0 +1,6 @@
+@CHARSET "UTF-8";
+.divborder{height:100px;width:400px;border:1px solid #F00}
+table{width:700px;border:solid #add9c0; border-width:1px 0px 0px 1px;}
+table td{border:solid #add9c0; border-width:0px 1px 1px 0px;}
+th{background-color:#c0c0c0;color:#800080;}
+.divPermissionBorder{height:300px;width:700px;border:1px solid #F00}

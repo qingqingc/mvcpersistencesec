@@ -1,0 +1,9 @@
+com\mvc\service\ManService.class
+com\mvc\dao\ManDaoImpl.class
+com\mvc\service\ManServiceImpl.class
+com\mvc\web\ManController.class
+com\mvc\entities\Man.class
+Test.class
+Test2.class
+com\mvc\dao\ManDao.class
+com\mvc\entities\Person.class
