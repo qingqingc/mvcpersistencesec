@@ -1,1 +1,6 @@
 这是一个关于spring新技术和老式配置为一体的学习型代码项目，基于自己实现的spring security和各种常用的关键技术为一体，可以直接用于公司项目框架搭建。
+spring security
+redis
+jpa
+mvc
+login in validate code
